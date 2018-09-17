@@ -9,20 +9,20 @@ class Setup:
         self.users.add(self.player)
         self.width = width
         self.height = height
+        self.display = pygame.display.set_mode((1000,500))
         pygame.display.set_caption("MyGame")
         self.running = True
-        self.play()
-        self.screen = Setup(1000,500)
 
     def play(self):
-        print("3")
         while self.running:
             self.player.press()
             self.draw()
 
     def draw(self):
-        self.screen.fill((0,0,0,0))
-        self.users.draw(screen)
+        self.screen = Setup(1000,500)
+        self.display.fill((0,0,0,0))
+        self.display.blit((self.screen(1000,500), self.player))
+        self.users.draw(self.screen)
         self.users.update()
         self.screen.flip()
 
@@ -172,5 +172,5 @@ def press():
 def __main__():
     global screen
     screen = Setup(1000,500)
-    screen.draw()
-    Setup()
+    Setup.draw(screen)
+    screen.press
