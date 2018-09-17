@@ -107,7 +107,7 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
             player.x-= 5
             self.draw_player()
             release()
-#        if not self.left:
+        if not self.left:
 
         else:
             print("3")
