@@ -20,7 +20,6 @@ class Setup:
             self.player.press()
             self.draw()
 
-
     def draw(self):
         self.screen.fill((0,0,0,0))
         self.users.draw(screen)
@@ -113,7 +112,6 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
             print("3")
             self.x +=5
             self.draw_player()
-
 
     def movey(self):
         if self.up:
