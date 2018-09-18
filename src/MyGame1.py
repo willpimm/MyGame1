@@ -15,16 +15,15 @@ class Setup:
 
     def play(self):
         while self.running:
-            self.player.press()
+            press()
             self.draw()
 
     def draw(self):
-        self.screen = Setup(1000,500)
+        #self.screen = Setup(1000,500) remoted unnecessary
         self.display.fill((0,0,0,0))
-        self.display.blit((self.screen(1000,500), self.player))
-        self.users.draw(self.screen)
         self.users.update()
-        self.screen.flip()
+        pygame.display.flip()
+        #self.screen.flip() changed to line above, because display is the object to be refreshed
 
 
 class Entity(): # Parent class
@@ -65,7 +64,6 @@ class Direction(Enum):
 
 # The following class is a subclass to entity which creates the player object
 class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
-
     def __init__(self,x,y,width,height):
         super().__init__(x,y,width,height)
         pygame.sprite.Sprite.__init__(self)
@@ -93,32 +91,23 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
 
     def fire(self):
         raise NotImplementedError
-"""
-    def draw_player(self):
+
+    """def draw_player(self): unnecessary?
         pygame.display.set_mode((1000,500)).fill(pygame.Color(0,0,0,0))
         self.rect = self.image.get_rect()
         pygame.display.flip()
+        """
 
 
-
-    def movex(self):
+    def move(self):
         if self.left:
-            player.x-= 5
-            self.draw_player()
-            release()
-        if not self.left:
-
-        else:
-            print("3")
-            self.x +=5
-            self.draw_player()
-
-    def movey(self):
+            player.rect.x-= 5
+        if self.right:
+            player.rect.x += 5
         if self.up:
             self.y-=5
         if self.down:
             self.y+=5
-        self.draw_player()
 """
 
 class Bullet(Player):
@@ -141,36 +130,37 @@ class Board():
 
 # event is a FIFO queue. Empties event queue and handles quit event. get() removes the first event in the queue
 """
-class Game():
-        def __init__():
+#class Game():
+#        def __init__():
 
 
-def press():
-    vector = pygame.math.Vector2
-    btn = pygame.key.get_pressed()
+def press(): #this has been changed to only track the pressing of keys
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
-        if event.type ==pygame.KEYDOWN:
+        elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.left = True
-                player.movex()
-            if event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_RIGHT: #event can only have 1 key, thus these are else if statements
                 player.right = True
-                player.movex()
-            if event.key == pygame.K_UP:
+            elif event.key == pygame.K_UP:
                 player.up = True
-                player.movey()
-            if event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN:
                 player.down = True
-                player.movey()
 
-#def release():
-#    if btn[pygame.K_LEFT]:
-"""
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT:
+                player.left = False
+            elif event.key == pygame.K_RIGHT: #event can only have 1 key, thus these are else if statements
+                player.right = False
+            elif event.key == pygame.K_UP:
+                player.up = False
+            elif event.key == pygame.K_DOWN:
+                player.down = False
+
+
 def __main__():
     global screen
     screen = Setup(1000,500)
-    Setup.draw(screen)
-    screen.press
+    screen.play()
