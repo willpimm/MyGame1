@@ -1,5 +1,4 @@
 import pygame,time
-from enum import Enum
 
 class Setup:
     def __init__(self,width,height):
@@ -15,18 +14,17 @@ class Setup:
 
     def play(self):
         while self.running:
-            press()
+            time.sleep(0.01)
+            self.player.move()
             self.draw()
+            events()
 
     def draw(self):
-        #self.screen = Setup(1000,500) remoted unnecessary
         self.display.fill((0,0,0,0))
-        self.users.update()
+        self.users.draw(self.display)
         pygame.display.flip()
-        #self.screen.flip() changed to line above, because display is the object to be refreshed
 
-
-class Entity(): # Parent class
+class Entity: # Parent class
     def __init__(self,x,y,width,height):
         self.x = x
         self.y = y
@@ -52,16 +50,6 @@ class Zombie(Entity): # sub-class to Entity
         else:
             zombie.y-=1
 
-class Direction(Enum):
-    N = (0,-1)
-    S = (0,1)
-    E = (1,0)
-    W = (-1,0)
-    NE = (-0.5,0.5)
-    NW = (-0.5,-0.5)
-    SE = (0.5,0.5)
-    SW = (0.5,-0.5)
-
 # The following class is a subclass to entity which creates the player object
 class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
     def __init__(self,x,y,width,height):
@@ -70,21 +58,27 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
         self.image = pygame.Surface((10,20))
         self.image.fill((153,50,204))
         self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
         self.vel_x = 0
         self.vel_y = 0
         self.up = False
         self.down = False
         self.left = False
         self.right = False
-        self.press()
 
-    def press(self):
-        self.velx = 0
+    def move(self):
+        self.vel_x = 0
+        self.vel_y = 0
         btn = pygame.key.get_pressed()
         if btn[pygame.K_LEFT]:
-            self.vel_x = -5
+            self.vel_x -= 5
         if btn[pygame.K_RIGHT]:
-            self.vel_x = 5
+            self.vel_x += 5
+        if btn[pygame.K_UP]:
+            self.vel_y -= 5
+        if btn[pygame.K_DOWN]:
+            self.vel_y += 5
 
         self.rect.x += self.vel_x
         self.rect.y += self.vel_y
@@ -92,73 +86,11 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
     def fire(self):
         raise NotImplementedError
 
-    """def draw_player(self): unnecessary?
-        pygame.display.set_mode((1000,500)).fill(pygame.Color(0,0,0,0))
-        self.rect = self.image.get_rect()
-        pygame.display.flip()
-        """
-
-
-    def move(self):
-        if self.left:
-            player.rect.x-= 5
-        if self.right:
-            player.rect.x += 5
-        if self.up:
-            self.y-=5
-        if self.down:
-            self.y+=5
-"""
-
-class Bullet(Player):
-    def __init__(self,up,down,left,right,size):
-        #super().__init__()
-        self.size = size
-
-    def draw_bullet(self):
-        pass
-        #raise NotImplementedError
-        #pygame.draw.circle(pygame.display.set_mode((screen.width,screen.height)),[105,105,105],(bullet.x,bullet.y), 8)
-
-#This class will...
-class Board():
-    def __init__(self,width,height):
-        self.width = width
-        self.height = height
-        pygame.display.set_caption("MyGame")
-
-
-# event is a FIFO queue. Empties event queue and handles quit event. get() removes the first event in the queue
-"""
-#class Game():
-#        def __init__():
-
-
-def press(): #this has been changed to only track the pressing of keys
+def events(): #this has been changed to only track the pressing of keys
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
             pygame.quit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                player.left = True
-            elif event.key == pygame.K_RIGHT: #event can only have 1 key, thus these are else if statements
-                player.right = True
-            elif event.key == pygame.K_UP:
-                player.up = True
-            elif event.key == pygame.K_DOWN:
-                player.down = True
-
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                player.left = False
-            elif event.key == pygame.K_RIGHT: #event can only have 1 key, thus these are else if statements
-                player.right = False
-            elif event.key == pygame.K_UP:
-                player.up = False
-            elif event.key == pygame.K_DOWN:
-                player.down = False
-
 
 def __main__():
     global screen

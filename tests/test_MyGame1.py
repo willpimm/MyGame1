@@ -3,11 +3,11 @@ import MyGame1
 # screen is an instance of Screen which we can use to test variable values.
 
 def test_display_board_width():
-    screen = MyGame1.Board(1000,500)
+    screen = MyGame1.Setup(1000,500)
     assert screen.width == 1000,"Screen was incorrect width."
 
 def test_display_board_height():
-    screen = MyGame1.Board(1000,500)
+    screen = MyGame1.Setup(1000,500)
     assert screen.height == 500,"Screen was incorrect height."
 
 def test_construct_Player():
