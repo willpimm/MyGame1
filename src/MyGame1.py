@@ -1,4 +1,4 @@
-import pygame,time
+import pygame,time, random
 
 class Setup:
     def __init__(self,width,height):
@@ -6,22 +6,30 @@ class Setup:
         self.player = Player(480,220,10,20)
         self.users = pygame.sprite.Group()
         self.users.add(self.player)
+        self.all_enemies = pygame.sprite.Group()
         self.width = width
         self.height = height
         self.display = pygame.display.set_mode((1000,500))
         pygame.display.set_caption("MyGame")
         self.running = True
 
+        for z in range(5):
+            self.all_enemies.add(Zombie())
+
     def play(self):
         while self.running:
             time.sleep(0.01)
             self.player.move()
             self.draw()
-            events()
+            self.player.events()
+
+            for zombie in self.all_enemies.sprites():
+                zombie.move()
 
     def draw(self):
         self.display.fill((0,0,0,0))
         self.users.draw(self.display)
+        self.all_enemies.draw(self.display)
         pygame.display.flip()
 
 class Entity: # Parent class
@@ -33,22 +41,27 @@ class Entity: # Parent class
 
         #self.health = health
 
-class Zombie(Entity): # sub-class to Entity
-    def __init__(self,x,y,width,height,health):
-        super().__init__(x,y,width,height,health)
-
-    def draw_zombie(self):
-        pass
+class Zombie(pygame.sprite.Sprite): # sub-class to Entity
+    def __init__(self):
+        #super().__init__(x,y,width,height)
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((10,20))
+        self.image.fill((124,252,0))
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randint(0,1000)
+        self.rect.y = random.randint(0,500)
+        self.display = pygame.display.set_mode((1000,500))
 
     def move(self):
-        if player.x > zombie.x:
-            zombie.x+=1
+        if screen.player.rect.x > self.rect.x:
+            self.rect.x+=1
         else:
-            player.x-=1
-        if player.y > zombie.y:
-            zombie.y+=1
+            self.rect.x-=1
+
+        if screen.player.rect.y > self.rect.y:
+            self.rect.y+=1
         else:
-            zombie.y-=1
+            self.rect.y-=1
 
 # The following class is a subclass to entity which creates the player object
 class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
@@ -71,13 +84,13 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
         self.vel_x = 0
         self.vel_y = 0
         btn = pygame.key.get_pressed()
-        if btn[pygame.K_LEFT]:
+        if btn[pygame.K_LEFT] and self.rect.x>0:
             self.vel_x -= 5
-        if btn[pygame.K_RIGHT]:
+        if btn[pygame.K_RIGHT] and self.rect.x<990:
             self.vel_x += 5
-        if btn[pygame.K_UP]:
+        if btn[pygame.K_UP] and self.rect.y>0:
             self.vel_y -= 5
-        if btn[pygame.K_DOWN]:
+        if btn[pygame.K_DOWN] and self.rect.y<480:
             self.vel_y += 5
 
         self.rect.x += self.vel_x
@@ -86,11 +99,11 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
     def fire(self):
         raise NotImplementedError
 
-def events(): #this has been changed to only track the pressing of keys
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
+    def events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                pygame.quit()
 
 def __main__():
     global screen

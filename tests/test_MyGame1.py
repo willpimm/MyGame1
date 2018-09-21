@@ -1,4 +1,6 @@
 import MyGame1
+import pygame
+pygame.init()
 # A module is created to test whether the display board is of correct width
 # screen is an instance of Screen which we can use to test variable values.
 
@@ -24,24 +26,28 @@ def test_player_height():
 
 def test_player_stays_in_boundries_left():
     player = MyGame1.Player(0,0,10,20)
-    player.move_left()
+    player.move()
+    pygame.key.get_pressed()[pygame.K_LEFT]
+    self.rect.x
     assert player.x >=0 ,"Player out of bounds"
 
 def test_player_stays_in_boundries_right():
     player = MyGame1.Player(1000,490,10,20)
-    player.move_right()
+    player.move()
     assert player.x<1001,"Player out of bounds"
 
 def test_player_stays_in_boundries_up():
     player = MyGame1.Player(0,0,10,20)
-    player.move_up()
+    player.move()
     assert player.y>-1,"Player out of bounds"
 
 def test_player_stays_in_boundries_down():
     player = MyGame1.Player(0,500,10,20)
-    player.move_down()
+    player.move()
     assert player.y< 501,"player out of bounds"
 
+#def test_quit_event():
+#    player
 """
 def test_construct_Zombie():
     zombie = MyGame1.Zombie(1, 1, 1, 1, 1)
