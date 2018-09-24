@@ -98,12 +98,16 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
         self.vel_y = 0
         btn = pygame.key.get_pressed()
         if btn[pygame.K_LEFT] and self.rect.x>0:
+            self.left = True
             self.vel_x -= 5
         if btn[pygame.K_RIGHT] and self.rect.x<990:
+            self.right = True
             self.vel_x += 5
         if btn[pygame.K_UP] and self.rect.y>0:
+            self.up = True
             self.vel_y -= 5
         if btn[pygame.K_DOWN] and self.rect.y<480:
+            self.down = True
             self.vel_y += 5
         if btn[pygame.K_SPACE]:
             self.fire()
@@ -113,7 +117,6 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
 
     def fire(self):
         screen.bullets.add(Bullet(screen.player.rect.x,screen.player.rect.y))
-
 
     def events(self):
         for event in pygame.event.get():
@@ -130,13 +133,18 @@ class Bullet(Entity,pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.vel_x = 5
-        self.vel_y = 5
+        self.vel_x = 10
+        self.self_y = 
 
     def move(self):
-        self.rect.x += self.vel_y
-        self.rect.y += self.vel_x
-
+        if screen.player.left:
+            self.rect.x -= self.vel
+        if screen.player.right:
+            self.rect.x += self.vel
+        if screen.player.up:
+            self.rect.y-= self.vel
+        if screen.player.down:
+            self.rect.y +=self.vel
 
 def __main__():
     global screen
