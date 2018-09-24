@@ -78,6 +78,8 @@ class Zombie(pygame.sprite.Sprite):
 
 # The following class is a subclass to entity which creates the player object
 class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
+    SPEED = 5
+
     def __init__(self,x,y,width,height):
         #super().__init__(x,y,width,height)
         pygame.sprite.Sprite.__init__(self)
@@ -99,16 +101,16 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
         btn = pygame.key.get_pressed()
         if btn[pygame.K_LEFT] and self.rect.x>0:
             self.left = True
-            self.vel_x -= 5
+            self.vel_x -= self.SPEED
         if btn[pygame.K_RIGHT] and self.rect.x<990:
             self.right = True
-            self.vel_x += 5
+            self.vel_x += self.SPEED
         if btn[pygame.K_UP] and self.rect.y>0:
             self.up = True
-            self.vel_y -= 5
+            self.vel_y -= self.SPEED
         if btn[pygame.K_DOWN] and self.rect.y<480:
             self.down = True
-            self.vel_y += 5
+            self.vel_y += self.SPEED
         if btn[pygame.K_SPACE]:
             self.fire()
 
@@ -116,7 +118,11 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
         self.rect.y += self.vel_y
 
     def fire(self):
-        screen.bullets.add(Bullet(screen.player.rect.x,screen.player.rect.y))
+        x_mult = self.vel_x / self.SPEED
+        y_mult = self.vel_y / self.SPEED
+        screen.bullets.add(Bullet(self.rect.x, self.rect.y, x_mult, y_mult))
+        #divides players x and y velo by speed, returning 1 if player is moving in a positive direction and -1 if negative
+        #this allows them the bullet to multiply by it's speed
 
     def events(self):
         for event in pygame.event.get():
@@ -125,7 +131,9 @@ class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
                 pygame.quit()
 
 class Bullet(Entity,pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    SPEED = 10 #speed constant, same for every bullet
+
+    def __init__(self,x, y, x_move, y_move):
         pygame.sprite.Sprite.__init__(self)
         #super().__init__(x,y,width,height)
         self.image = pygame.Surface((10,10),pygame.SRCALPHA)
@@ -133,18 +141,12 @@ class Bullet(Entity,pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.vel_x = 10
-        self.self_y = 
+        self.vel_x = self.SPEED * x_move
+        self.vel_y = self.SPEED * y_move
 
     def move(self):
-        if screen.player.left:
-            self.rect.x -= self.vel
-        if screen.player.right:
-            self.rect.x += self.vel
-        if screen.player.up:
-            self.rect.y-= self.vel
-        if screen.player.down:
-            self.rect.y +=self.vel
+        self.rect.x += self.vel_x
+        self.rect.y += self.vel_y
 
 def __main__():
     global screen
