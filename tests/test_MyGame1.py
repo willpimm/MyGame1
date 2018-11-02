@@ -13,38 +13,41 @@ def test_display_board_height():
     assert screen.height == 500,"Screen was incorrect height."
 
 def test_construct_Player():
-    player = MyGame1.Player(480,220,10,20)
+    player = MyGame1.Player(480,220)
     assert player, "player not constructed"
 
 def test_player_width():
-    player = MyGame1.Player(480,220,10,20)
-    assert player.width == 10,"Player incorrect width"
+    player = MyGame1.Player(480,220)
+    assert player.rect.width == 10,"Player incorrect width"
 
 def test_player_height():
-    player = MyGame1.Player(480,220,10,20)
-    assert player.height == 20,"Player inccorect height"
+    player = MyGame1.Player(480,220)
+    assert player.rect.height == 20,"Player inccorect height"
 
 def test_player_stays_in_boundries_left():
-    player = MyGame1.Player(0,0,10,20)
+    player = MyGame1.Player(0,0)
     player.move()
-    pygame.key.get_pressed()[pygame.K_LEFT]
-    self.rect.x
-    assert player.x >=0 ,"Player out of bounds"
+    assert player.rect.x >=0 ,"Player out of bounds"
 
 def test_player_stays_in_boundries_right():
-    player = MyGame1.Player(1000,490,10,20)
+    player = MyGame1.Player(1000,490)
     player.move()
-    assert player.x<1001,"Player out of bounds"
+    assert player.rect.x<1001,"Player out of bounds"
 
 def test_player_stays_in_boundries_up():
-    player = MyGame1.Player(0,0,10,20)
+    player = MyGame1.Player(0,0)
     player.move()
-    assert player.y>-1,"Player out of bounds"
+    assert player.rect.y>-1,"Player out of bounds"
 
 def test_player_stays_in_boundries_down():
-    player = MyGame1.Player(0,500,10,20)
+    player = MyGame1.Player(0,500)
     player.move()
-    assert player.y< 501,"player out of bounds"
+    assert player.rect.y< 501,"player out of bounds"
+
+def test_player_moves_left():
+    player = MyGame1.Player(0,0)
+    player.move(-1,0)
+    assert player.rect.x == -1 and player.rect.y == 0 
 
 #def test_quit_event():
 #    player
