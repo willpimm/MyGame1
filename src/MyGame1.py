@@ -1,22 +1,6 @@
 import pygame,time, random, pygame.gfxdraw
 pygame.init()
 
-"""
-            while self.safe:
-                collision = pygame.sprite.spritecollide(self.player,self.all_enemies,False)
-                if collision:
-                    self.safe = False
-                else:
-                    self.safe = True
-                    #zombie.rect.x = screen.player.rect.
-"""
-class Entity: # Parent class
-    def __init__(self,x,y,width,height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
 class Zombie(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
@@ -37,44 +21,52 @@ class Zombie(pygame.sprite.Sprite):
         else:
             self.rect.y-=1
 
+def detectCollision():
+    collide = True
+    while collide:
+        collision = pygame.sprite.spritecollide(self.player,self.all_enemies,False)
+        if collision:
+            self.collide = False
+        else:
+            self.collide = True
+            #zombie.rect.x = screen.player.rect.
+
 # The following class is a subclass to entity which creates the player object
-class Player(Entity, pygame.sprite.Sprite): # sub-class to Entity
+class Player(pygame.sprite.Sprite):
     SPEED = 5
     def __init__(self,x,y):
-        #super().__init__(x,y,width,height)
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((10,20))
         self.image.fill((153,50,204))
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
         self.moving_x = 0
         self.moving_y = 0
-        self.pos_x = 0
-        self.pos_y = 0
+        self.x_direction = 0
+        self.y_direction = 0
 
-    def move(self,x,y):
-        if player.moving_y == -1 and self.rect.y>0:
-            player.rect.y -=10
-            self.pos_y +=self.SPEED
-        if player.moving_y == 1 and self.rect.y < 490:
-            player.rect.y +=10
-            self.pos_y += self.SPEED
-        if player.moving_x == -1 and self.rect.x>0:
-            player.rect.x -=10
-            self.pos_x -= self.SPEED
-        if player.moving_x == 1 and self.rect.x<990:
-            player.rect.x +=10
-            self.pos_x +=self.SPEED
+    def move_up(self):
+        if self.y_direction == -1:
+            if self.rect.y>0: self.rect.y -=self.SPEED
+
+    def move_down(self):
+        if self.y_direction == 1:
+            if self.rect.y< 490: self.rect.y +=self.SPEED
+
+    def move_left(self):
+        if self.x_direction == -1:
+            if self.rect.x>0: self.rect.x -= self.SPEED
+
+    def move_right(self):
+        if self.x_direction == 1:
+            if self.rect.x<990: self.rect.x +=self.SPEED
 
     def shoot(self, x_move, y_move):
         bullets.add(Bullet(self.rect.x, self.rect.y, x_move, y_move))
 
-class Bullet(Entity,pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite):
     SPEED = 10 #speed constant, same for every bullet
     def __init__(self,x, y, x_move, y_move):
         pygame.sprite.Sprite.__init__(self)
-        #super().__init__(x,y,width,height)
         self.image = pygame.Surface((10,10),pygame.SRCALPHA)
         pygame.gfxdraw.filled_circle(self.image, 10, 10, 14, (153,50,204))
         self.rect = self.image.get_rect()
@@ -84,25 +76,13 @@ class Bullet(Entity,pygame.sprite.Sprite):
         self.vel_y = self.SPEED * y_move
 
     def update(self):
+        shoot_x_move = shoot_right - shoot_left
+        print(shoot_x_move)
+        shoot_y_move = shoot_down - shoot_up
+        if shoot_x_move or shoot_y_move:
+            player.shoot(shoot_x_move, shoot_y_move)
         self.rect.x += self.vel_x
         self.rect.y += self.vel_y
-
-def inputs(): # added if not line, to handle releases
-    btn = pygame.key.get_pressed()
-    if btn[pygame.K_LEFT]:
-        player.moving_x = -1
-    if btn[pygame.K_RIGHT]:
-        player.moving_x = 1
-    if not btn[pygame.K_RIGHT] and not btn[pygame.K_LEFT]:
-        player.moving_x = 0
-    if btn[pygame.K_UP]:
-        player.moving_y = -1
-    if btn[pygame.K_DOWN]:
-        player.moving_y = 1
-    if not btn[pygame.K_UP] and not btn[pygame.K_DOWN]:
-        player.moving_y = 0
-    if btn[pygame.K_SPACE]:
-        pass
 
 def draw():
     display.fill((0,0,0,0))
@@ -111,6 +91,38 @@ def draw():
     all_enemies.draw(display)
     pygame.display.flip()
 
+def get_events():
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT: running = False, pygame.quit()
+        if event.type == pygame.KEYDOWN: handle_keydown(event.key)
+        if event.type == pygame.KEYUP: handle_keyup(event.key)
+
+def handle_keydown(key):
+    if key == pygame.K_UP: player.y_direction = -1
+    elif key == pygame.K_DOWN: player.y_direction = 1
+    elif key == pygame.K_LEFT: player.x_direction = -1
+    elif key == pygame.K_RIGHT: player.x_direction = 1
+    if key == pygame.K_w: pass
+    if key == pygame.K_a: pass
+    if key == pygame.K_s: pass
+    if key == pygame.K_d: pass
+
+def handle_keyup(key):
+    if key == pygame.K_UP: player.y_direction = 0
+    if key == pygame.K_DOWN: player.y_direction = 0
+    if key == pygame.K_LEFT: player.x_direction = 0
+    if key == pygame.K_RIGHT: player.x_direction = 0
+    if key == pygame.K_w: pass
+    elif key == pygame.K_a: pass
+    elif key == pygame.K_s: pass
+    elif key == pygame.K_d: pass
+
+
+class Game():
+    def __init__(self):
+        self.users = pygame.sprite.Group()
+        self.users.add(player)
+        
 def __main__():
     global player, users, all_enemies, bullets, display, running
     player = Player(480,220)
@@ -129,31 +141,12 @@ def __main__():
 
     while running:
         time.sleep(0.01)
-        inputs()
-        player.move(0,0)
+        get_events()
+        player.move_up()
+        player.move_down()
+        player.move_left()
+        player.move_right()
         draw()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-                pygame.quit()
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w: shoot_up = 1
-                elif event.key == pygame.K_a: shoot_left = 1
-                elif event.key == pygame.K_s: shoot_down = 1
-                elif event.key == pygame.K_d: shoot_right = 1
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_w: shoot_up = 0
-                elif event.key == pygame.K_a: shoot_left = 0
-                elif event.key == pygame.K_s: shoot_down = 0
-                elif event.key == pygame.K_d: shoot_right = 0
-
-        shoot_x_move = shoot_right - shoot_left
-        shoot_y_move = shoot_up - shoot_down
-        if shoot_x_move or shoot_y_move:
-            player.shoot(shoot_x_move, shoot_y_move)
-
 
         for bullet in bullets.sprites():
             bullet.update()
